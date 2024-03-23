@@ -1,19 +1,19 @@
+#!/bin/bash
+
+# Create Streamlit configuration if not already present
 mkdir -p ~/.streamlit/
 echo "\
 [server]\n\
 headless = true\n\
 port = $PORT\n\
 enableCORS = false\n\
-\n\
 " > ~/.streamlit/config.toml
 
-#!/bin/bash
-
-conda install -c conda-forge opencv
+# Install OpenCV using Conda
+conda install -y -c conda-forge opencv
 
 # Install other libraries using pip
 pip install -r library.txt
 
-# Run the application
+# Run the Streamlit application
 streamlit run streamlit-app.py
-
