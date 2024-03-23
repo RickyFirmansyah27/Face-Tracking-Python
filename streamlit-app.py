@@ -8,10 +8,14 @@ import cv2
 detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 # predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 body_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
+def detect_faces(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    return faces
 
 def main():
-    #initiate
     cap = cv2.VideoCapture(0)
+        #initiate
     prev_x, prev_y, prev_w, prev_h = 0, 0, 0, 0 
     alpha = 0.2
     smoothed_dx_box = 0
@@ -19,8 +23,20 @@ def main():
     blue_color = (255, 0, 0)
     blue_box_size = 250
 
-    while True:
+    if not cap.isOpened():
+        st.error("Error: Unable to access the webcam.")
+        return
+
+    blue_color = (255, 0, 0)
+    blue_box_size = 250
+
+    while cap.isOpened():
         ret, frame = cap.read()
+        if not ret:
+            st.error("Error: Unable to receive frames from the webcam.")
+            break
+
+        faces = detect_faces(frame)
 
         # Konversi frame ke skala abu-abu (untuk meningkatkan kinerja deteksi)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
