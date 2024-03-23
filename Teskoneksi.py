@@ -5,7 +5,7 @@ import os
 
 def connect_to_server():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = (192.168.1.1,12345)
+    server_address = ('192.168.1.1',12345)
     while True:
         try:
             client_socket.connect(server_address)
