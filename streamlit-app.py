@@ -14,7 +14,7 @@ def detect_faces(frame):
     return faces
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)  # Change index to 1
         #initiate
     prev_x, prev_y, prev_w, prev_h = 0, 0, 0, 0 
     alpha = 0.2
