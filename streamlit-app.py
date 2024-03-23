@@ -1,8 +1,8 @@
 import streamlit as st
-import cv2
 import numpy as np
 import Teskoneksi
 import time
+import cv2
 
 
 detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
