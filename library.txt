@@ -1,3 +1,4 @@
-pencv-contrib-python
+opencv-python-headless
+opencv-contrib-python
 dlib
 streamlit
