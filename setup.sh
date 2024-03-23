@@ -14,7 +14,7 @@ conda activate base
 conda install -y -c conda-forge opencv
 
 # Install other libraries using pip
-pip install -r library.txt
+pip install -r requirements.txt
 
 # Run the Streamlit application
 streamlit run streamlit-app.py
