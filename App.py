@@ -9,9 +9,6 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 prev_x, prev_y, prev_w, prev_h = 0, 0, 0, 0
 body_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
 
-# Inisialisasi socket dan koneksi ke server
-client_socket = Teskoneksi.connect_to_server()
-
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -91,22 +88,31 @@ def main():
     cv2.destroyAllWindows()
 
 
-# Loop utama
-while True:
-    try:
-        client_socket = Teskoneksi.send_ping(client_socket)
-        if client_socket:
-            main()
+def reconnect_to_server():
+    # Fungsi untuk mencoba menyambung kembali ke server
+    while True:
+        try:
+            client_socket = Teskoneksi.connect_to_server() 
+            print("Terhubung kembali ke server.")
+            return client_socket
+        except (ConnectionError, TimeoutError):
+            print("Gagal menyambung kembali ke server. Akan mencoba lagi dalam beberapa detik...")
+            time.sleep(5)
 
-    except (ConnectionResetError, BrokenPipeError):
-        print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
-        client_socket.close()
-        while True:
-            try:
-                client_socket = Teskoneksi.connect_to_server()  # Mencoba menyambung kembali ke server
-                print("Terhubung kembali ke server.")
-                # Setelah tersambung kembali, loop utama akan melanjutkan pengiriman pesan ping
-                break
-            except (ConnectionError, TimeoutError):
-                print("Gagal menyambung kembali ke server. Akan mencoba lagi dalam beberapa detik...")
-                time.sleep(5)
+def connect_and_run():
+    while True:
+        try:
+            client_socket = Teskoneksi.connect_to_server()
+            if client_socket:
+                main()
+            else:
+                print("Tidak dapat terhubung ke server. Memulai program utama tanpa koneksi ke server.")
+                main()
+            break
+        except (ConnectionResetError, BrokenPipeError):
+            print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
+            client_socket.close()
+            client_socket = reconnect_to_server()
+
+if __name__ == "__main__":
+    connect_and_run()
