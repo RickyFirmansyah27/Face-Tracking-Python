@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-import Teskoneksi
+import connection
 import time
 import cv2
 
@@ -95,7 +95,7 @@ def main():
 def reconnect_to_server():
     while True:
         try:
-            client_socket = Teskoneksi.connect_to_server() 
+            client_socket = connection.connect_to_server() 
             st.write("Terhubung kembali ke server.")
             return client_socket
         except (ConnectionError, TimeoutError):

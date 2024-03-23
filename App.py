@@ -1,7 +1,8 @@
 import cv2
-# import dlib
-import Teskoneksi
+import socket
+import connection
 import time
+import os
 
 detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 # predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
@@ -83,10 +84,10 @@ def main():
     cv2.destroyAllWindows()
 
 def reconnect_to_server():
-    # Fungsi untuk mencoba menyambung kembali ke server
     while True:
         try:
-            client_socket = Teskoneksi.connect_to_server() 
+            client_socket = connection.connect_to_server()
+            connection.send_ping(client_socket)
             print("Terhubung kembali ke server.")
             return client_socket
         except (ConnectionError, TimeoutError):
@@ -94,20 +95,22 @@ def reconnect_to_server():
             time.sleep(5)
 
 def connect_and_run():
-    while True:
-        try:
-            main()
-            # client_socket = Teskoneksi.connect_to_server()
-            # if client_socket:
-            #     main()
-            # else:
-            #     print("Tidak dapat terhubung ke server. Memulai program utama tanpa koneksi ke server.")
-            #     main()
-            break
-        except (ConnectionResetError, BrokenPipeError):
-            print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
-            client_socket.close()
-            client_socket = reconnect_to_server()
+    try:
+        server_address = (os.getenv('SERVER_HOST', 'localhost'), int(os.getenv('SERVER_PORT', '8000')))
+        print(server_address)
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.settimeout(10)
+        client_socket.connect(server_address)
+        print("Terhubung ke server.")
+        main()
+    except TimeoutError:
+        print("Koneksi ke server gagal karena timeout. Akan mencoba menyambung kembali...")
+        client_socket = reconnect_to_server()
+        main()
+    except (ConnectionResetError, BrokenPipeError):
+        print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
+        client_socket = reconnect_to_server()
+        main()
 
 if __name__ == "__main__":
     connect_and_run()
