@@ -15,7 +15,7 @@ def detect_faces(frame):
     return faces
 
 def main():
-    cap = cv2.VideoCapture(0)  # Use index 0 for the default camera
+    cap = cv2.VideoCapture(1)  # Use index 0 for the default camera
     if not cap.isOpened():
         st.error("Error: Unable to access the webcam.")
         return
