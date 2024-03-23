@@ -10,6 +10,7 @@ enableCORS = false\n\
 " > ~/.streamlit/config.toml
 
 # Install OpenCV using Conda
+conda activate base
 conda install -y -c conda-forge opencv
 
 # Install other libraries using pip
