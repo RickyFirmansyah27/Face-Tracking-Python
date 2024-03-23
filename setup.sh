@@ -9,6 +9,7 @@ enableCORS = false\n\
 
 #!/bin/bash
 
+conda install -c conda-forge opencv
 
 # Install other libraries using pip
 pip install -r library.txt
