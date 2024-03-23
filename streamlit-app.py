@@ -1,13 +1,13 @@
+import streamlit as st
 import cv2
-# import dlib
+import numpy as np
 import Teskoneksi
 import time
+
 
 detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 # predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 body_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
-
-
 
 def main():
     #initiate
@@ -38,15 +38,15 @@ def main():
 
                 if abs(smoothed_dx_box) > 10:
                     if smoothed_dx_box > 0:
-                        print("Moving to the Right")
+                        st.write("Moving to the Right")
                     else:
-                        print("Moving to the Left")
+                        st.write("Moving to the Left")
 
                 if abs(smoothed_dy_box) > 10:
                     if smoothed_dy_box > 0:
-                        print("Moving Downwards")
+                        st.write("Moving to the Downwards")
                     else:
-                        print("Moving Upwards")
+                        st.write("Moving to the Upward")
 
                 prev_x, prev_y, prev_w, prev_h = x, y, w, h
 
@@ -63,13 +63,13 @@ def main():
                 else:
                     # Kotak hijau keluar dari kotak biru, deteksi pergeseran
                     if green_box_x > blue_box_x + blue_box_size:
-                        print("Moving to the Right")
+                        st.write("Moving to the Right")
                     elif green_box_x + green_box_w < blue_box_x:
-                        print("Moving to the Left")
+                        st.write("Moving to the Left")
                     if green_box_y > blue_box_y + blue_box_size:
-                        print("Moving Downwards")
+                        st.write("Moving to the Downwards")
                     elif green_box_y + green_box_h < blue_box_y:
-                        print("Moving Upwards")
+                        st.write("Moving to the Upwards")
 
                 # Gambar kotak di sekitar wajah dengan warna hijau
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -83,14 +83,13 @@ def main():
     cv2.destroyAllWindows()
 
 def reconnect_to_server():
-    # Fungsi untuk mencoba menyambung kembali ke server
     while True:
         try:
             client_socket = Teskoneksi.connect_to_server() 
-            print("Terhubung kembali ke server.")
+            st.write("Terhubung kembali ke server.")
             return client_socket
         except (ConnectionError, TimeoutError):
-            print("Gagal menyambung kembali ke server. Akan mencoba lagi dalam beberapa detik...")
+            st.write("Gagal menyambung kembali ke server. Akan mencoba lagi dalam beberapa detik...")
             time.sleep(5)
 
 def connect_and_run():
@@ -101,11 +100,11 @@ def connect_and_run():
             # if client_socket:
             #     main()
             # else:
-            #     print("Tidak dapat terhubung ke server. Memulai program utama tanpa koneksi ke server.")
+            #     st.write("Tidak dapat terhubung ke server. Memulai program utama tanpa koneksi ke server.")
             #     main()
             break
         except (ConnectionResetError, BrokenPipeError):
-            print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
+            st.write("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
             client_socket.close()
             client_socket = reconnect_to_server()
 
