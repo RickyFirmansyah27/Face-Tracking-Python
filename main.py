@@ -21,7 +21,7 @@ def main():
         smoothed_dx_box = 0
         smoothed_dy_box = 0
         blue_color = (255, 0, 0)
-        blue_box_size = 250
+        blue_box_size = 350
 
         while True:
             ret, frame = cap.read()
@@ -78,11 +78,13 @@ def main():
 
             cv2.imshow('Talking Face Detection', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                cap.release()
+                cv2.destroyAllWindows()
                 break
+                    # Tutup webcam dan jendela tampilan
 
-    # Tutup webcam dan jendela tampilan
-    cap.release()
-    cv2.destroyAllWindows()
+
+
 
 # Fungsi untuk melakukan reconnect
 def reconnect_to_server():
@@ -113,7 +115,9 @@ def connect_and_run():
         main()
     except TimeoutError:
         print("Koneksi ke server gagal karena timeout. Akan mencoba menyambung kembali...")
-        reconnect_to_server()
+        # reconnect_to_server()
+        connected = True
+        main()
     except (ConnectionResetError, BrokenPipeError):
         print("Koneksi ke server terputus. Akan mencoba menyambung kembali...")
         reconnect_to_server()
